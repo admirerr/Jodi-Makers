@@ -25,7 +25,9 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
                 return
             }
 
-               const response = await axios.post('https://localhost:8000/signup', { email, password })
+
+               console.log('posting', email, password)
+               const response = await axios.post('http://localhost:8000/signup', { email, password })
 
 
                 const success = response.status === 201
