@@ -2,7 +2,7 @@ import {useState} from 'react'
 import axios from "axios"
 
 const ChatInput = ({ user, clickedUser, getUsersMessages, getClickedUsersMessages}) => {
-    const [textArea, setTextArea] = useState(null)
+    const [textArea, setTextArea] = useState("")
     const userId = user?.user_id
     const clickedUserId = clickedUser?.user_id
 

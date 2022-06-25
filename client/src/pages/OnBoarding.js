@@ -50,7 +50,6 @@ const OnBoarding = () => {
 
     }
 
-    console.log(formData)
 
     return (
         <>
