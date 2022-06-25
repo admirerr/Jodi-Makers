@@ -319,7 +319,8 @@ nav .logo-container .logo {
 
 /*----Chat Display ----*/
 
-.chat-display {
+.chat-display,
+.matches-display{
     padding: 20px;
     height: 60vh;
     overflow-y: auto;

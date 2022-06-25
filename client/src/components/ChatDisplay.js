@@ -48,7 +48,7 @@ const ChatDisplay = ({ user, clickedUser}) => {
 
     const messages = []
 
-        console.log('usersMessages', usersMessages)
+
 
     usersMessages?.forEach(message => {
         const formattedMessage = {}
@@ -80,7 +80,11 @@ const ChatDisplay = ({ user, clickedUser}) => {
     return (
         <>
         <Chat descendingOrderMessages = {descendingOrderMessages}/>
-        <ChatInput/>
+        <ChatInput
+            user={user}
+            clickedUser={clickedUser}
+            getUsersMessages={getUsersMessages}
+            getClickedUsersMessages={getClickedUsersMessages}/>
         </>
     )
 }
