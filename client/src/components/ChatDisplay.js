@@ -1,7 +1,9 @@
 import Chat from "./Chat"
 import ChatInput from "./ChatInput"
 
-const ChatDisplay = () => {
+const ChatDisplay = ({ user, clickedUser}) => {
+
+
     return (
         <>
         <Chat/>
