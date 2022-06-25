@@ -234,15 +234,21 @@ app.put('/addmatch', async (req, res) => {
 
 
 
-app.get('/messages', () => {
+app.get('/messages', async (req, res) => {
     const client = new MongoClient(uri)
-    const database = client.db('app-data')
-    const messages = database.collection('messages')
 
-    const query = {
-        from_userId: userId, to_userId: correspondingUserId
+    try {
+        const database = client.db('app-data')
+        const messages = database.collection('messages')
+
+        const query = {
+            from_userId: userId, to_userId: correspondingUserId
+        }
+        const foundMessages = await messages.find(query).toArray
+        res.send(foundMessages)
+    } finally {
+        await client.close()
     }
-    // const foundMessages = await messages.find(query).toArray()
 })
 
 
