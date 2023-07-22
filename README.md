@@ -11,7 +11,7 @@ To get started with the project, you will need to follow these steps:
 2. Install the dependencies: `npm install`
 3. Start the development server: `npm start`
 
-The application should now be running on http://localhost:3000.
+The application should now be running on http://localhost:3000 and you will be prompted to home page.
 
 ## Features
 
@@ -32,6 +32,8 @@ Jodi Makers is built using the following technologies:
 - MongoDB
 - Express.js
 - Bootstrap
+
+
 
 ## Contributing
 
