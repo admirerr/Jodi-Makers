@@ -8,10 +8,10 @@ Jodi Makers is a web application that allows users to match with potential partn
 To get started with the project, you will need to follow these steps:
 
 1. Clone the repository: `git clone https://github.com/admirerr/Jodi-Makers.git`
-2. Install the dependencies: `npm install`
-3. Start the development server: `npm start`
-
-The application should now be running on http://localhost:3000 and you will be prompted to home page.
+2. Start the server: 
+   cd server->npm i->npm i nodemon->nodemon run start:backend
+3. Start the client in parallel terminal: 
+   cd client->npm i->npm i nodemon->nodemon run start:frontend
 
 ## Features
 
@@ -20,7 +20,7 @@ Jodi Makers provides the following features:
 - Create a profile
 - Swipe left or right on potential matches
 - View matches and chat with them
-- Edit profile information
+- Provide profile information
 - Search for matches based on preferences
 
 ## Technologies Used
@@ -45,7 +45,4 @@ If you would like to contribute to Jodi Makers, you can follow these steps:
 4. Push to the branch: `git push origin new-feature`
 5. Create a pull request
 
-## License
-
-Jodi Makers is released under the MIT License. See LICENSE for more information.
 
