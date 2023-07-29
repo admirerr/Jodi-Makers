@@ -34,6 +34,15 @@ Jodi Makers is built using the following technologies:
 - Bootstrap
 
 
+## Contributors
+
+* [Shubham Kashyap](https://github.com/admirerr)
+* [Muskan Patel](https://github.com/muskan272002)
+* [Sunil Kumar Sharma](https://github.com/SunilkumarSharma129)
+* [Kajal Shahi](https://github.com/shahikaju7)
+
+
+
 
 ## Contributing
 
@@ -44,5 +53,6 @@ If you would like to contribute to Jodi Makers, you can follow these steps:
 3. Make your changes and commit them: `git commit -m "Add new feature"`
 4. Push to the branch: `git push origin new-feature`
 5. Create a pull request
+
 
 
