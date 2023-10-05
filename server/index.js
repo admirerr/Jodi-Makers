@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
 
-const uri = 'mongodb+srv://shubham:hello@cluster0.6wssv.mongodb.net/?retryWrites=true&w=majority'
+const uri = 'YOUR_MONGODB_URI'
 
 
 const app = express()
