@@ -46,8 +46,6 @@ const OnBoarding = () => {
             ...prevState,
             [name]: value
         }))
-
-
     }
 
 
@@ -184,21 +182,22 @@ const OnBoarding = () => {
 
 
                     <section>
-
-                        <label htmlFor="url">Profile Photo</label>
-                        <input
-                            type="url"
-                            name="url"
-                            id="url"
-                            onChange={handleChange}
-                            required={true}
-                        />
-                        <div className="photo-container">
-                            {formData.url && <img src={formData.url} alt="profile pic preview"/>}
-                        </div>
-
-
+                            <label htmlFor="url">Profile Photo</label>
+                                <input
+                                 type="file"
+                                 name="url"
+                                    id="url"
+                                    accept="image/*"
+                                    onChange={handleChange}
+                                    required
+                                />
+                                {formData.profilePhoto && (
+                                    <div className="photo-container">
+                                    <img src={URL.createObjectURL(formData.url)} alt="profile pic preview" />
+                                    </div>
+                                )}
                     </section>
+
 
                 </form>
 
