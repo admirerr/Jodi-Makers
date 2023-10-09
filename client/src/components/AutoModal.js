@@ -2,7 +2,14 @@ import {useState,useEffect} from "react"
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useCookies} from "react-cookie";
-import validator from 'validator'
+import validator from 'validator';
+const glassmorphismStyle = {
+    background: 'rgba(255, 255, 255, 0.2)', 
+    borderRadius: '10px',
+    padding: '20px',
+    backdropFilter: 'blur(10px)', 
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', 
+  };
 const AuthModal = ({ setShowModal, isSignUp }) => {
     const [email, setEmail] = useState(null)
     const [password, setPassword] = useState(null)
@@ -43,6 +50,7 @@ const [passwordMessage,setMessage]=useState('Enter a password having minimum 8 c
 
     const handleSubmit = async (e) => {
 
+
         e.preventDefault()//page wont refresh .
     
         try {     
@@ -75,7 +83,7 @@ if(isSignUp && strongPassword==='false'){
     }
 
     return (
-
+        <div className="auth-modal" style={glassmorphismStyle}>
         <div className="auth-modal">
             <div className="close-icon" onClick={handleClick}>ⓧ</div>
             <h2>{isSignUp ? 'Create Account' : 'Log In'}</h2>
@@ -116,6 +124,7 @@ if(isSignUp && strongPassword==='false'){
             <h2>GET THE APP</h2>
 
         </div>
+    </div>
     )
 }
 export default AuthModal
