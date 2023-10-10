@@ -6,13 +6,90 @@ const { v4: uuidv4} = require('uuid')
 const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
-
-const uri = 'YOUR_MONGODB_URI'
+const {google}=require('googleapis');
+const uri = 'mongodb://localhost:27017'
 
 
 const app = express()
 app.use(cors())
 app.use(express.json())
+
+//api configuration and creadential's to be changed according to use case
+const scopes=['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/profile.emails.read']
+const clienid="231065169890-l55sbl2ij802t79ukp11po6eidc1ii16.apps.googleusercontent.com"
+const clientsecret="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"
+const redirecturi="http://localhost:8000/google";
+const oauthclient=new google.auth.OAuth2(clienid,clientsecret,redirecturi);
+
+
+app.get('/authgoogle',(req,res)=>{
+    const authurl=oauthclient.generateAuthUrl({access_type:'offline',scope:scopes})
+    res.redirect(authurl)   //handles the auth request from frontend and redirect's to google
+})
+app.get('/google',async(req,res)=>{ //handles the callback from google
+    const {code}=req.query
+    try {
+       
+        const { tokens } = await oauthclient.getToken(code);
+        const accessToken = tokens.access_token;
+        const refreshToken = tokens.refresh_token; //keeping the token's open incase more type of data is required
+        var auth=oauthclient;
+        auth.credentials=tokens;
+
+        const people = google.people({ version: 'v1', auth:auth });
+        
+        var googleid;
+        people.people.get({
+          resourceName: 'people/me',
+          personFields: 'emailAddresses'
+        })
+        .then(async(response) => {
+            const client = new MongoClient(uri)
+            const generateUserId = uuidv4() //create the user in database
+            
+            await client.connect()
+            const database = client.db('app-data')
+            const users = database.collection('users')
+
+
+          const email=response.data.emailAddresses[0].value;
+          const sanitizedEmail = email.toLowerCase()
+          const existingUser = await users.findOne( { email })
+          if(existingUser) {
+            const token = jwt.sign(existingUser, sanitizedEmail, {
+                expiresIn: 60*24,   //sign the token and send it
+            })
+    
+            const resobject=JSON.stringify({token:token,userId:existingUser.user_id,logged:'true'});
+            res.redirect('http://localhost:3000/oauthlogger/'+resobject)
+            return;
+        }
+      
+         
+
+        const data = {
+            user_id: generateUserId,
+            email: sanitizedEmail,
+         
+        }
+        const insertedUser = await users.insertOne(data)
+
+        const token = jwt.sign(insertedUser, sanitizedEmail, {
+            expiresIn: 60*24,
+        })
+
+        const resobject=JSON.stringify({token:token,userId:generateUserId,logged:'false'});
+        res.redirect('http://localhost:3000/oauthlogger/'+resobject)
+        
+         
+        })
+       
+        
+      } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error during authentication');
+      }
+})
 
 app.get('/', (req, res) => {
     res.json('Hello to my app')

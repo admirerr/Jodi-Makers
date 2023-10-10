@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useCookies} from "react-cookie";
 import validator from 'validator'
+
 const AuthModal = ({ setShowModal, isSignUp }) => {
     const [email, setEmail] = useState(null)
     const [password, setPassword] = useState(null)
@@ -30,6 +31,16 @@ const [passwordMessage,setMessage]=useState('Enter a password having minimum 8 c
   return "It is a strong password";
           }
     }
+    const handleGoogleLogin=(e)=>{
+        try{
+            e.preventDefault();
+            window.location.href='http://localhost:8000/authgoogle'
+        }
+        catch{
+
+        }
+    }
+
     const handleClick = () => {
         setShowModal(false)
     }
@@ -109,6 +120,9 @@ if(isSignUp && strongPassword==='false'){
                 />}
 
                 <input className="secondary-button" type="submit"/>
+                <button  className="login-with-google-btn secondary-button" >
+                    Continue With Google
+                </button>
                 <p>{error}</p>
 
             </form>
