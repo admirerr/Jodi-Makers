@@ -9,10 +9,10 @@ const OauthLogger=()=>{
     const response=JSON.parse(data)
     async function handleCookies(){
        try{       
-        setCookie('UserId', response.userId,{path:'/'})
+        setCookie('UserId', response.userId,{path:'/'}) //set the cookie's
         setCookie('AuthToken', response.token,{path:'/'})
-        if(response.logged='true'){
-            window.location.href='http://localhost:3000/dashboard'
+        if(response.logged=='true'){
+            window.location.href='http://localhost:3000/dashboard' //callback url based on registered status
         }
         else{
             window.location.href='http://localhost:3000/onboarding'

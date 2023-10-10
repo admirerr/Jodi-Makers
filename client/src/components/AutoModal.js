@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useCookies} from "react-cookie";
 import validator from 'validator'
+
 const AuthModal = ({ setShowModal, isSignUp }) => {
     const [email, setEmail] = useState(null)
     const [password, setPassword] = useState(null)
@@ -119,7 +120,9 @@ if(isSignUp && strongPassword==='false'){
                 />}
 
                 <input className="secondary-button" type="submit"/>
-                <button className="secondary-button" onClick={handleGoogleLogin}>Google</button>
+                <button  className="login-with-google-btn secondary-button" >
+                    Sign in with Google
+                </button>
                 <p>{error}</p>
 
             </form>
