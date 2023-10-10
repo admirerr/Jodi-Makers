@@ -94,7 +94,7 @@ if(isSignUp && strongPassword==='false'){
 
     return (
         <div className="auth-modal" style={glassmorphismStyle}>
-        <div className="auth-modal">
+      
             <div className="close-icon" onClick={handleClick}>ⓧ</div>
             <h2>{isSignUp ? 'Create Account' : 'Log In'}</h2>
             <p>By clicking Log In, you agree to our terms. Learn how we process your data in our Privacy Policy and Cookie Policy.</p>
@@ -136,7 +136,6 @@ if(isSignUp && strongPassword==='false'){
             <hr/>
             <h2>GET THE APP</h2>
 
-        </div>
     </div>
     )
 }
