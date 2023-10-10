@@ -37,6 +37,16 @@ const [passwordMessage,setMessage]=useState('Enter a password having minimum 8 c
   return "It is a strong password";
           }
     }
+    const handleGoogleLogin=(e)=>{
+        try{
+            e.preventDefault();
+            window.location.href='http://localhost:8000/authgoogle'
+        }
+        catch{
+
+        }
+    }
+
     const handleClick = () => {
         setShowModal(false)
     }
@@ -117,6 +127,9 @@ if(isSignUp && strongPassword==='false'){
                 />}
 
                 <input className="secondary-button" type="submit"/>
+                <button  className="login-with-google-btn secondary-button" >
+                    Continue With Google
+                </button>
                 <p>{error}</p>
 
             </form>
