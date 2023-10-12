@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
 const {google}=require('googleapis');
-const uri = 'mongodb://localhost:27017'
+const uri = 'mongodb+srv://ishsinghal0707:BkG84hH2jMwEIeO4@cluster0.kyh1dow.mongodb.net/?retryWrites=true&w=majority'
 
 
 const app = express()
