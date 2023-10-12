@@ -102,7 +102,6 @@ const Dashboard = () => {
             {user &&
                 <div className="dashboard">
                     <ChatContainer user={user}/>
-                    {/* onclick logout lagana wapas */}
                     <div className="swipe-container">
                     <div className="logout-icon"><i className="log-out-icon" onClick={logout}>⇦</i></div>
                         <div className="card-container">
