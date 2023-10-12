@@ -36,7 +36,6 @@ const Dashboard = () => {
         }
     }
 
-
     useEffect(() => {
         getUser()
     }, [])
@@ -49,6 +48,7 @@ const Dashboard = () => {
     }, [user])
 
 
+    console.log(genderedUsers)
 
 
 
@@ -101,9 +101,9 @@ const Dashboard = () => {
                                             key={genderedUser.user_id}
                                             onSwipe={(dir) => swiped(dir, genderedUser.user_id)}
                                             onCardLeftScreen={() => outOfFrame(genderedUser.first_name)}>
+                                    <h3 className="name-display">{genderedUser.first_name}</h3>
                                     <div style={{backgroundImage: 'url(' + genderedUser.url + ')'}}
                                          className='card'>
-                                        <h3>{genderedUser.first_name}</h3>
                                     </div>
                                 </TinderCard>
                             )}
