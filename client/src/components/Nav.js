@@ -1,5 +1,5 @@
-import whiteLogo from '../images/tinder_logo_white.png'
-import colorLogo from '../images/color-logo-tinder.png'
+import whiteLogo from '../images/Jodi-Makers.jpg'
+import colorLogo from '../images/Jodi-Makers.jpg'
 
 const Nav = ({ authToken, minimal, setShowModal, showModal, setIsSignUp }) => {
 const handleClick = () => {
