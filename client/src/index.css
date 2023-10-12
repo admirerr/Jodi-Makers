@@ -304,6 +304,13 @@ nav .logo-container .logo {
     padding: 10px;
 }
 
+.logout-icon{
+    display: flex;
+    justify-content:flex-end;
+    width: 97%;
+    cursor: pointer;
+}
+
 
 /*------Chat Container ------*/
 
