@@ -3,12 +3,21 @@ import {useEffect, useState} from "react"
 import { useCookies} from "react-cookie"
 import ChatContainer from '../components/ChatContainer'
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 const Dashboard = () => {
     const [user, setUser] = useState(null)
     const [genderedUsers, setGenderedUsers] = useState(null)
     const [lastDirection, setLastDirection] = useState()
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
+    let navigate = useNavigate()
+
+    const logout = () => {
+        removeCookie('UserId', cookies.UserId)
+        removeCookie('AuthToken', cookies.AuthToken)
+        navigate('/')
+        window.location.reload()
+    }
 
 
     const userId = cookies.UserId
@@ -93,9 +102,10 @@ const Dashboard = () => {
             {user &&
                 <div className="dashboard">
                     <ChatContainer user={user}/>
+                    {/* onclick logout lagana wapas */}
                     <div className="swipe-container">
+                    <div className="logout-icon"><i className="log-out-icon" onClick={logout}>⇦</i></div>
                         <div className="card-container">
-
                             {filteredGenderedUsers?.map((genderedUser) =>
                                 <TinderCard className='swipe'
                                             key={genderedUser.user_id}
