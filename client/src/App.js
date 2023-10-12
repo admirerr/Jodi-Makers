@@ -3,6 +3,7 @@ import Dashboard from './pages/Dashboard'
 import OnBoarding from './pages/OnBoarding'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import {useCookies} from "react-cookie";
+import {OauthLogger} from './components/OauthLogger'
 
 const App = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/" element={<Home/>}/>
             {authToken && <Route path="/dashboard" element={<Dashboard/>}/>}
             {authToken && <Route path="/onboarding" element={<OnBoarding/>}/>}
+            <Route path='/oauthlogger/:data' element={<OauthLogger/>}/>
         </Routes>
       </BrowserRouter>
   )

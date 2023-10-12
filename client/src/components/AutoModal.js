@@ -3,6 +3,15 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useCookies} from "react-cookie";
 import validator from 'validator'
+
+const glassmorphismStyle = {
+    background: 'rgba(255, 255, 255, 0.2)', 
+    borderRadius: '10px',
+    padding: '20px',
+    backdropFilter: 'blur(10px)', 
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', 
+  };
+
 const AuthModal = ({ setShowModal, isSignUp }) => {
     const [email, setEmail] = useState(null)
     const [password, setPassword] = useState(null)
@@ -30,6 +39,16 @@ const [passwordMessage,setMessage]=useState('Enter a password having minimum 8 c
   return "It is a strong password";
           }
     }
+    const handleGoogleLogin=(e)=>{
+        try{
+            e.preventDefault();
+            window.location.href='http://localhost:8000/authgoogle'
+        }
+        catch{
+
+        }
+    }
+
     const handleClick = () => {
         setShowModal(false)
     }
@@ -76,7 +95,7 @@ if(isSignUp && strongPassword==='false'){
 
     return (
 
-        <div className="auth-modal">
+        <div className="auth-modal" style={glassmorphismStyle}>
             <div className="close-icon" onClick={handleClick}>ⓧ</div>
             <h2>{isSignUp ? 'Create Account' : 'Log In'}</h2>
             <p>By clicking Log In, you agree to our terms. Learn how we process your data in our Privacy Policy and Cookie Policy.</p>
@@ -109,6 +128,9 @@ if(isSignUp && strongPassword==='false'){
                 />}
 
                 <input className="secondary-button" type="submit"/>
+                <button  className="login-with-google-btn secondary-button" onClick={handleGoogleLogin} >
+                    Continue With Google
+                </button>
                 <p>{error}</p>
 
             </form>
