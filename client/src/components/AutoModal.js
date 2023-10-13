@@ -120,7 +120,7 @@ if(isSignUp && strongPassword==='false'){
                 />}
 
                 <input className="secondary-button" type="submit"/>
-                <button  className="login-with-google-btn secondary-button" >
+                <button  className="login-with-google-btn secondary-button" onClick={handleGoogleLogin} >
                     Continue With Google
                 </button>
                 <p>{error}</p>
