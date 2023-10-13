@@ -16,7 +16,7 @@ const OnBoarding = () => {
         show_gender: false,
         gender_identity: "man",
         gender_interest: "woman",
-        url: "",
+        profilePhoto: null,
         about: "",
         matches: []
 
@@ -28,7 +28,8 @@ const OnBoarding = () => {
         e.preventDefault()
 
         try {
-            const response = await axios.put('http://localhost:8000/user', { formData })
+            const response = await axios.put('http://localhost:8000/user', { formData },{headers:{"Content-Type":"multipart/form-data"},
+        })
             const success = response.status === 200
             if(success) navigate('/dashboard')
         } catch (err) {
@@ -49,7 +50,14 @@ const OnBoarding = () => {
 
 
     }
-
+    const handleImageChange = (e) => {
+        const file=e.target.files[0];// Get the uploaded file
+       console.log(file)
+       setFormData((prevState) => ({
+         ...prevState,
+         profilePhoto: file// Store the uploaded file in the profilePhoto field
+       }));
+     };  
 
     return (
         <>
@@ -184,20 +192,20 @@ const OnBoarding = () => {
 
 
                     <section>
-
-                        <label htmlFor="url">Profile Photo</label>
+                    <label htmlFor="profilePhoto">Profile Photo</label>
                         <input
-                            type="url"
-                            name="url"
-                            id="url"
-                            onChange={handleChange}
-                            required={true}
+                        type="file"
+                        name="profilePhoto"
+                        id="profilePhoto"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        required
                         />
+                        {formData.profilePhoto && (
                         <div className="photo-container">
-                            {formData.url && <img src={formData.url} alt="profile pic preview"/>}
+                            <img src={URL.createObjectURL(formData.profilePhoto)} alt="profile pic preview" />
                         </div>
-
-
+                        )}
                     </section>
 
                 </form>

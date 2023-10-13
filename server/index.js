@@ -9,6 +9,8 @@ const bcrypt = require('bcrypt')
 const {google}=require('googleapis');
 const uri = 'mongodb://0.0.0.0:27017'
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 const app = express()
 app.use(cors())
@@ -250,39 +252,45 @@ app.get('/gendered-users', async (req, res) => {
 
 
 
-app.put('/user', async (req, res) => {
-    const client = new MongoClient(uri)
-    const formData = req.body.formData
 
-    console.log(formData)
-
+app.put('/user', upload.single('profilePhoto'), async (req, res) => {
+    const client = new MongoClient(uri);
+    const formData = req.body.formData;
+  
+    console.log(formData);
+  
     try {
-        await client.connect()
-        const database = client.db('app-data')
-        const users = database.collection('users')
+      await client.connect();
+      const database = client.db('app-data');
+      const users = database.collection('users');
+  
+      const query = { user_id: formData.user_id };
+      const updateDocument = {
+        $set: {
+          first_name: formData.first_name,
+          dob_day: formData.dob_day,
+          dob_month: formData.dob_month,
+          dob_year: formData.dob_year,
+          show_gender: formData.show_gender,
+          gender_identity: formData.gender_identity,
+          profile_photo:req.file.filename,
+          gender_interest: formData.gender_interest,
+          about: formData.about,
+          matches: formData.matches,
+        },
+      };
+  
 
-
-        const query = { user_id: formData.user_id}
-        const updateDocument = {
-            $set: {
-                first_name: formData.first_name,
-                dob_day: formData.dob_day,
-                dob_month: formData.dob_month,
-                dob_year: formData.dob_year,
-                show_gender: formData.show_gender,
-                gender_identity: formData.gender_identity,
-                gender_interest: formData.gender_interest,
-                url: formData.url,
-                about: formData.about,
-                matches: formData.matches
-            },
-        }
-        const insertedUser = await users.updateOne(query, updateDocument)
-        res.send(insertedUser)
+      if (req.file) {
+        console.log("uploaded");
+      }
+      const insertedUser = await users.updateOne(query, updateDocument);
+      res.send(insertedUser);
     } finally {
-        await client.close()
+      await client.close();
     }
-})
+  });
+  
 
 
 
