@@ -311,9 +311,10 @@ nav .logo-container .logo {
     background-color: rgb(255,255,255);
     box-shadow: rgba(0,0,0,0.05) 0px 6px 24px 0px,
     rgba(0,0,0,0.08) 0px 0px 0px 1px;
-    width: 30%;
+    width:54vh;
     text-align: left;
     z-index: 1;
+  
 }
 
 
@@ -336,6 +337,7 @@ nav .logo-container .logo {
 
 .chat-container .option:disabled {
     border-bottom: solid 4px rgb(187,187,187);
+    font-size: 20px;
 }
 
 .chat-container .profile,
@@ -374,5 +376,6 @@ nav .logo-container .logo {
 .chat-input {
     padding: 20px;
     display: flex;
-    flex-direction: column;
+    
+    flex-direction: column; 
 }

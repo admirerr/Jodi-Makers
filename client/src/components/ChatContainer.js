@@ -7,7 +7,7 @@ const ChatContainer = ({ user }) => {
 
     const [ clickedUser, setClickedUser] = useState(0)
     console.log(clickedUser);
-    const [matches,setMatches]=useState(0);
+   
 const obj1={
     color : clickedUser ? "gray" : "rgb(243,33,33)",
     borderBottom: clickedUser?"solid 4px rgb(187,187,187)":"solid 4px rgb(243,33,33)"
