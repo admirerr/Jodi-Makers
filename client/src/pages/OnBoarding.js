@@ -78,34 +78,13 @@ const OnBoarding = () => {
                         <label>Birthday</label>
                         <div className="multiple-input-container">
                             <input
-                                id="dob_day"
-                                type="number"
-                                name="dob_day"
-                                placeholder="DD"
+                              type="date"
+                              id="dob"
+                                name="dob"
                                 required={true}
-                                value={formData.dob_day}
+                                value={formData.dob}
                                 onChange={handleChange}
-                            />
-
-                        <input
-                            id="dob_month"
-                            type="number"
-                            name="dob_month"
-                            placeholder="MM"
-                            required={true}
-                            value={formData.dob_month}
-                            onChange={handleChange}
-                        />
-
-                        <input
-                            id="dob_year"
-                            type="number"
-                            name="dob_year"
-                            placeholder="YYYY"
-                            required={true}
-                            value={formData.dob_year}
-                            onChange={handleChange}
-                        />
+                                />
                         </div>
 
 
