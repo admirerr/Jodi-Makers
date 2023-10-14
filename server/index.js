@@ -90,7 +90,7 @@ app.get('/google',async(req,res)=>{ //handles the callback from google
         res.status(500).send('Error during authentication');
       }
 })
-app.post('/abandon',async (req,res)=>{
+app.post('/abandon',async (req,res)=>{ //endpoint for deleting the user from the data base
     const client = new MongoClient(uri);
     console.log('called')
     await client.connect();
@@ -105,7 +105,7 @@ app.post('/abandon',async (req,res)=>{
     }
     res.send('done')
 })
-app.get('/exist',async (req,res)=>{
+app.get('/exist',async (req,res)=>{ //endpoint for checking if the user with current authtoken is in the database
     const id = req.query.user_id;
     const client = new MongoClient(uri);
     console.log('exist called')

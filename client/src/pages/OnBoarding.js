@@ -7,7 +7,7 @@ import axios from "axios"
 const OnBoarding = () => {
 
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({ //changed the state to read from thhe from the form data cookie
         user_id: cookies.UserId,
         first_name: cookies.formData?cookies.formData.first_name:'',
         dob_day: cookies.formData?cookies.formData.dob_day:'',
@@ -25,15 +25,17 @@ const OnBoarding = () => {
 
     useEffect(()=>{
             
-        const beforeUnloadHandler = async(event) => {
+        const beforeUnloadHandler = async(event) => { //before refresh or closing save the form data
             setCookie('formData',JSON.stringify(formData),{path:'/'})
-            axios.post('http://localhost:8000/abandon',formData);
-            sessionStorage.setItem('redirect','true');          
+            axios.post('http://localhost:8000/abandon',formData); //call backend to delete the user
+            sessionStorage.setItem('redirect','true');//this is used so that the user is redirected even if a reload occurs
+            //this is done because many browser have security feature where reload event and tab closing event are identical ton each other''s to prevent scammer's from prompting something
+
         };
           
-            window.addEventListener("beforeunload", beforeUnloadHandler);
+            window.addEventListener("beforeunload", beforeUnloadHandler); //add the listener when onboarding is mounted
             return (()=>{   
-                window.removeEventListener("beforeunload", beforeUnloadHandler); 
+                window.removeEventListener("beforeunload", beforeUnloadHandler);//cleanup on dismount
             }  
      )  
     },[formData,removeCookie,setCookie])
@@ -69,10 +71,9 @@ const OnBoarding = () => {
         
 
     }
-    if(sessionStorage.getItem('redirect')!=null){
-        
-        sessionStorage.removeItem('redirect');
-        removeCookie('UserId')
+    if(sessionStorage.getItem('redirect')!=null){//since session storage persit's in the tab this will tell us wheteher refresh was done or tab was closed
+        sessionStorage.removeItem('redirect'); //remove the item from the session
+        removeCookie('UserId') //delete the cookie's since the user is no longer in the database
         removeCookie('AuthToken')
         window.location.href='http://localhost:3000'
     }

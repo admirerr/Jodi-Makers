@@ -6,7 +6,7 @@ import axios from "axios"
 import { useNavigate } from "react-router-dom"
 
 const Dashboard = () => {
-    const [user, setUser] = useState({})
+    const [user, setUser] = useState({}) //was throwing some error related to null safety
     const [genderedUsers, setGenderedUsers] = useState(null)
     const [lastDirection, setLastDirection] = useState()
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
