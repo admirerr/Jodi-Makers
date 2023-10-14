@@ -46,7 +46,8 @@ const OnBoarding = () => {
         e.preventDefault()
 
         try {
-            const response = await axios.put('http://localhost:8000/user', { formData })
+            const response = await axios.put('http://localhost:8000/user', { formData },{headers:{"Content-Type":"multipart/form-data"},
+        })
             const success = response.status === 200
             if(success) {
                 setCookie('formData',{})
@@ -76,7 +77,14 @@ const OnBoarding = () => {
         removeCookie('UserId') //delete the cookie's since the user is no longer in the database
         removeCookie('AuthToken')
         window.location.href='http://localhost:3000'
-    }
+    }    const handleImageChange = (e) => {
+        const file=e.target.files[0];// Get the uploaded file
+       console.log(file)
+       setFormData((prevState) => ({
+         ...prevState,
+         profilePhoto: file// Store the uploaded file in the profilePhoto field
+       }));
+     };  
     
     return (
         <>
@@ -211,21 +219,20 @@ const OnBoarding = () => {
 
 
                     <section>
-
-                        <label htmlFor="url">Profile Photo</label>
+                    <label htmlFor="profilePhoto">Profile Photo</label>
                         <input
-                            type="url"
-                            name="url"
-                            id="url"
-                            onChange={handleChange}
-                            required={true}
-                            value={formData.url}
+                        type="file"
+                        name="profilePhoto"
+                        id="profilePhoto"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        required
                         />
+                        {formData.profilePhoto && (
                         <div className="photo-container">
-                            {formData.url && <img src={formData.url} alt="profile pic preview"/>}
+                            <img src={URL.createObjectURL(formData.profilePhoto)} alt="profile pic preview" />
                         </div>
-
-
+                        )}
                     </section>
 
                 </form>

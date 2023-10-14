@@ -13,20 +13,20 @@ const App = () => {
     
     
       useEffect(()=>{
-        const checkToken = async () => {
+        const checkToken = async () => { //when the tab get's closed the authToken still perisit's this function remove's that
           if(cookies.UserId!=null){
-            const res = await axios.get('http://localhost:8000/exist',{params:{
+            const res = await axios.get('http://localhost:8000/exist',{params:{ //call exist endpoint to check if the token is still valid
                 user_id:cookies.UserId,
             }})
-            if(res.data=='noUser'){
-              removeCookie('UserId')
+            if(res.data=='noUser'){ //if server say's it is invalid delete the token
+              removeCookie('UserId') //delete the cookie's
               removeCookie('AuthToken')
-              window.location.reload()
+              window.location.reload()//trigger a reload to take the user to the right page
             }
           }
         }
       
-        checkToken();
+        checkToken();//call the function
         
     },[])
       

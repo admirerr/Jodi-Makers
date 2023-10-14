@@ -276,6 +276,7 @@ nav .logo-container .logo {
 
 .swipe {
     position: absolute;
+    margin-bottom: 2px;
 }
 
 .dashboard .card-container {
@@ -304,6 +305,84 @@ nav .logo-container .logo {
     padding: 10px;
 }
 
+/* Styling for the name display */
+.name-display {
+    background: linear-gradient(45deg, #ff6b6b, #ff1e56);
+    color: #fff;
+    font-size: 2rem; 
+    padding: 10px 20px;
+    border-radius: 10px;
+    position: absolute;
+    top: -5px; 
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom:2px;
+    margin:0;
+    z-index: 0;
+    text-align: center;
+    font-family: 'Pacifico', cursive; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    animation: nameFadeIn 0.5s ease; 
+    animation: nameBounce 0.5s ease alternate infinite;
+  }
+  
+  /* Keyframes for fade-in animation */
+  @keyframes nameFadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes nameBounce {
+    0% {
+      transform: translateX(-50%) translateY(0);
+    }
+    100% {
+      transform: translateX(-50%) translateY(-2px); /* Adjust the bounce height */
+    }
+  }
+
+/* Styling for the name display */
+.name-display {
+    background: linear-gradient(45deg, #ff6b6b, #ff1e56);
+    color: #fff;
+    font-size: 2rem; 
+    padding: 10px 20px;
+    border-radius: 10px;
+    position: absolute;
+    top: -5px; 
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom:2px;
+    margin:0;
+    z-index: 0;
+    text-align: center;
+    font-family: 'Pacifico', cursive; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    animation: nameFadeIn 0.5s ease; 
+    animation: nameBounce 0.5s ease alternate infinite;
+  }
+  
+  /* Keyframes for fade-in animation */
+  @keyframes nameFadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes nameBounce {
+    0% {
+      transform: translateX(-50%) translateY(0);
+    }
+    100% {
+      transform: translateX(-50%) translateY(-2px); /* Adjust the bounce height */
+    }
+  }
+
 .logout-icon{
     display: flex;
     justify-content:flex-end;
@@ -312,15 +391,17 @@ nav .logo-container .logo {
 }
 
 
+
 /*------Chat Container ------*/
 
 .chat-container {
     background-color: rgb(255,255,255);
     box-shadow: rgba(0,0,0,0.05) 0px 6px 24px 0px,
     rgba(0,0,0,0.08) 0px 0px 0px 1px;
-    width: 30%;
+    width:54vh;
     text-align: left;
     z-index: 1;
+  
 }
 
 
@@ -343,6 +424,7 @@ nav .logo-container .logo {
 
 .chat-container .option:disabled {
     border-bottom: solid 4px rgb(187,187,187);
+    font-size: 20px;
 }
 
 .chat-container .profile,
@@ -381,5 +463,6 @@ nav .logo-container .logo {
 .chat-input {
     padding: 20px;
     display: flex;
-    flex-direction: column;
+    
+    flex-direction: column; 
 }
