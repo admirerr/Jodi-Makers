@@ -30,7 +30,7 @@ const ChatInput = ({ user, clickedUser, getUsersMessages, getClickedUsersMessage
 
     return (
         <div className="chat-input">
-            <textarea value={textArea} onChange={(e) => setTextArea(e.target.value)}/>
+            <textarea value={textArea} onChange={(e) => setTextArea(e.target.value)}/><br/>
             <button className="secondary-button" onClick={addMessage   }>Submit</button>
         </div>
     )
