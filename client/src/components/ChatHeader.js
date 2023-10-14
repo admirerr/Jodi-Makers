@@ -1,5 +1,5 @@
 import { useCookies} from "react-cookie"
-
+import './ChatHeader.css';
 
 const ChatHeader = ({user}) => {
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
