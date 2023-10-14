@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
 const {google}=require('googleapis');
-const uri = 'mongodb://0.0.0.0:27017'
+const uri = 'YOUR_MONGODB_URI'
 
 const multer = require('multer');
 
