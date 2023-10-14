@@ -2,7 +2,7 @@ import ChatHeader from './ChatHeader'
 import MatchesDisplay from './MatchesDisplay'
 import ChatDisplay from './ChatDisplay'
 import {useState} from "react"
-
+import './Dashboard.css';
 const ChatContainer = ({ user }) => {
 
     const [ clickedUser, setClickedUser] = useState(0)
@@ -19,7 +19,7 @@ const obj={
     return(
     <div className="chat-container">
         <ChatHeader user={user}/>
-        <div>
+        <div className="smallbox">
             <button style={obj1} className="option"  onClick={() => setClickedUser(old=>{return !old})} disabled={!clickedUser}>Matches</button>
             <button style={obj}  className="option" disabled={clickedUser} onClick={() => setClickedUser(old=>{return !old})} >Chat</button>
         </div>

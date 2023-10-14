@@ -9,9 +9,17 @@ const bcrypt = require('bcrypt')
 const {google}=require('googleapis');
 const uri = 'mongodb://localhost:27017/' //insert your mongo uri here
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const multer = require('multer');
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+      cb(null,  file.originalname)
+    }
+  })
+  const upload = multer({ storage: storage })
 const app = express()
 app.use(cors())
 app.use(express.json())
@@ -289,9 +297,9 @@ app.get('/gendered-users', async (req, res) => {
 
 
 
-app.put('/user', upload.single('profilePhoto'), async (req, res) => {
+app.put('/user',  async (req, res) => {
     const client = new MongoClient(uri);
-    const formData = req.body.formData;
+    const formData = req.body;
   
     console.log(formData);
   
@@ -309,22 +317,24 @@ app.put('/user', upload.single('profilePhoto'), async (req, res) => {
           dob_year: formData.dob_year,
           show_gender: formData.show_gender,
           gender_identity: formData.gender_identity,
-          profile_photo:req.file.filename,
           gender_interest: formData.gender_interest,
+          profilePhoto:formData.profilePhoto,
           about: formData.about,
           matches: formData.matches,
         },
       };
   
-
-      if (req.file) {
-        console.log("uploaded");
-      }
       const insertedUser = await users.updateOne(query, updateDocument);
       res.send(insertedUser);
     } finally {
       await client.close();
     }
+  });
+
+  app.post("/upload-image",upload.single("profilePhoto"),async (req,res)=>
+  {
+    console.log(req.body);
+    res.send("Uploaded!");
   });
   
 

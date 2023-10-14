@@ -46,10 +46,19 @@ const OnBoarding = () => {
         e.preventDefault()
 
         try {
-            const response = await axios.put('http://localhost:8000/user', { formData },{headers:{"Content-Type":"multipart/form-data"},
-        })
+            const response = await axios.put('http://localhost:8000/user', { formData },
+        )
+            const formdata2=new FormData();
+            formdata2.append("profilePhoto",formData.profilePhoto2);
+            const response2= await axios.post("http://localhost:8000/upload-image",formdata2,
+            {
+                headers:{"Content-Type":"multipart/form-data"},
+            }
+            );
+
             const success = response.status === 200
-            if(success) {
+            const success2 = response2.status === 200
+            if(success&&success2) {
                 setCookie('formData',{})
                 navigate('/dashboard')
                 
@@ -62,30 +71,33 @@ const OnBoarding = () => {
 
     const handleChange = (e) => {
         console.log('e', e)
-        const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
-        const name = e.target.name
-    
-        setFormData((prevState) => ({
+          const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+          const name = e.target.name;
+      
+          setFormData((prevState) => ({
             ...prevState,
-            [name]: value
-        }))
+            [name]: value,
+          }));
         
+      };
 
-    }
-    if(sessionStorage.getItem('redirect')!=null){//since session storage persit's in the tab this will tell us wheteher refresh was done or tab was closed
+      if(sessionStorage.getItem('redirect')!=null){//since session storage persit's in the tab this will tell us wheteher refresh was done or tab was closed
         sessionStorage.removeItem('redirect'); //remove the item from the session
         removeCookie('UserId') //delete the cookie's since the user is no longer in the database
         removeCookie('AuthToken')
         window.location.href='http://localhost:3000'
     }    const handleImageChange = (e) => {
-        const file=e.target.files[0];// Get the uploaded file
-       console.log(file)
-       setFormData((prevState) => ({
-         ...prevState,
-         profilePhoto: file// Store the uploaded file in the profilePhoto field
-       }));
-     };  
-    
+         const file=e.target.files[0];// Get the uploaded file
+        console.log(file)
+        setFormData((prevState) => ({
+          ...prevState,
+          profilePhoto: file.name,// Store the uploaded file in the profilePhoto field
+          profilePhoto2: file// Store the uploaded file in the profilePhoto field
+        }));
+      };  
+          
+
+
     return (
         <>
             <Nav
@@ -230,7 +242,7 @@ const OnBoarding = () => {
                         />
                         {formData.profilePhoto && (
                         <div className="photo-container">
-                            <img src={URL.createObjectURL(formData.profilePhoto)} alt="profile pic preview" />
+                            <img src={URL.createObjectURL(formData.profilePhoto2)} alt="profile pic preview" />
                         </div>
                         )}
                     </section>
