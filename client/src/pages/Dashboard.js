@@ -6,7 +6,7 @@ import axios from "axios"
 import { useNavigate } from "react-router-dom"
 
 const Dashboard = () => {
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState({})
     const [genderedUsers, setGenderedUsers] = useState(null)
     const [lastDirection, setLastDirection] = useState()
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
@@ -92,8 +92,10 @@ const Dashboard = () => {
         console.log(name + ' left the screen!')
     }
 
-
-    const matchedUserIds = user?.matches.map(({ user_id}) => user_id).concat(userId)
+    if(user.matches!=null){
+        var matchedUserIds = user?.matches.map(({ user_id}) => user_id).concat(userId)
+    }
+   
     const filteredGenderedUsers = genderedUsers?.filter(genderedUser => !matchedUserIds.includes(genderedUser.user_id))
 
 

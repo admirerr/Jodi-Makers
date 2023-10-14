@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useState,useEffect} from "react"
 import Nav from "../components/Nav"
 import { useCookies} from "react-cookie"
 import {useNavigate} from "react-router-dom"
@@ -9,28 +9,48 @@ const OnBoarding = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
     const [formData, setFormData] = useState({
         user_id: cookies.UserId,
-        first_name: "",
-        dob_day: "",
-        dob_month: "",
-        dob_year: "",
-        show_gender: false,
-        gender_identity: "man",
-        gender_interest: "woman",
-        url: "",
-        about: "",
-        matches: []
+        first_name: cookies.formData?cookies.formData.first_name:'',
+        dob_day: cookies.formData?cookies.formData.dob_day:'',
+        dob_month: cookies.formData?cookies.formData.dob_month:'',
+        dob_year: cookies.formData?cookies.formData.dob_year:'',
+        show_gender: cookies.formData?cookies.formData.show_gender:false,
+        gender_identity: cookies.formData?cookies.formData.gender_identity:'man',
+        gender_interest: cookies.formData?cookies.formData.gender_interest:'woman',
+        url: cookies.formData?cookies.formData.url:'',
+        about: cookies.formData?cookies.formData.about:'',
+        matches: cookies.formData?cookies.formData.matches:[],
 
     })
+    
 
+    useEffect(()=>{
+            
+        const beforeUnloadHandler = async(event) => {
+            setCookie('formData',JSON.stringify(formData),{path:'/'})
+            axios.post('http://localhost:8000/abandon',formData);
+            sessionStorage.setItem('redirect','true');          
+        };
+          
+            window.addEventListener("beforeunload", beforeUnloadHandler);
+            return (()=>{   
+                window.removeEventListener("beforeunload", beforeUnloadHandler); 
+            }  
+     )  
+    },[formData,removeCookie,setCookie])
+   
     let navigate = useNavigate()
-
+    
     const handleSubmit = async (e) => {
         e.preventDefault()
 
         try {
             const response = await axios.put('http://localhost:8000/user', { formData })
             const success = response.status === 200
-            if(success) navigate('/dashboard')
+            if(success) {
+                setCookie('formData',{})
+                navigate('/dashboard')
+                
+            }
         } catch (err) {
             console.log(err)
         }
@@ -39,18 +59,24 @@ const OnBoarding = () => {
 
     const handleChange = (e) => {
         console.log('e', e)
-            const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
+        const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
         const name = e.target.name
-
+    
         setFormData((prevState) => ({
             ...prevState,
             [name]: value
         }))
-
+        
 
     }
-
-
+    if(sessionStorage.getItem('redirect')!=null){
+        
+        sessionStorage.removeItem('redirect');
+        removeCookie('UserId')
+        removeCookie('AuthToken')
+        window.location.href='http://localhost:3000'
+    }
+    
     return (
         <>
             <Nav
@@ -192,6 +218,7 @@ const OnBoarding = () => {
                             id="url"
                             onChange={handleChange}
                             required={true}
+                            value={formData.url}
                         />
                         <div className="photo-container">
                             {formData.url && <img src={formData.url} alt="profile pic preview"/>}
