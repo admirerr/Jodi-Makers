@@ -1,0 +1,33 @@
+/* ChatDisplay.css */
+.chat-display {
+    background-color:  #ADD8E6;/* Set your desired background color */
+    padding: 10px; /* Add padding for spacing between messages */
+    border-radius: 8px; /* Add rounded corners for a card-like appearance */
+  }
+  
+  .chat-message-header {
+    display: flex;
+    align-items: center;
+  }
+  
+  .img-container {
+    width: 40px; /* Set the desired width for the image container */
+    height: 40px; /* Set the desired height for the image container */
+    margin-right: 10px; /* Add spacing between the image and text */
+  }
+  
+  .img-container img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%; /* Make the image round */
+  }
+  
+  .chat-message-header p {
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .chat-display p {
+    margin: 0;
+  }
+  

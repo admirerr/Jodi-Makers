@@ -14,9 +14,10 @@ const OnBoarding = () => {
         dob_month: "",
         dob_year: "",
         show_gender: false,
+        profilePhoto:"",
         gender_identity: "man",
         gender_interest: "woman",
-        profilePhoto: null,
+        profilePhoto2: null,
         about: "",
         matches: []
 
@@ -28,10 +29,19 @@ const OnBoarding = () => {
         e.preventDefault()
 
         try {
-            const response = await axios.put('http://localhost:8000/user', { formData },{headers:{"Content-Type":"multipart/form-data"},
-        })
+            const response = await axios.put('http://localhost:8000/user', { formData },
+        )
+            const formdata2=new FormData();
+            formdata2.append("profilePhoto",formData.profilePhoto2);
+            const response2= await axios.post("http://localhost:8000/upload-image",formdata2,
+            {
+                headers:{"Content-Type":"multipart/form-data"},
+            }
+            );
+
             const success = response.status === 200
-            if(success) navigate('/dashboard')
+            const success2 = response2.status === 200
+            if(success&&success2) navigate('/dashboard')
         } catch (err) {
             console.log(err)
         }
@@ -40,24 +50,27 @@ const OnBoarding = () => {
 
     const handleChange = (e) => {
         console.log('e', e)
-            const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
-        const name = e.target.name
-
-        setFormData((prevState) => ({
+          const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+          const name = e.target.name;
+      
+          setFormData((prevState) => ({
             ...prevState,
-            [name]: value
-        }))
+            [name]: value,
+          }));
+        
+      };
 
+      const handleImageChange = (e) => {
+         const file=e.target.files[0];// Get the uploaded file
+        console.log(file)
+        setFormData((prevState) => ({
+          ...prevState,
+          profilePhoto: file.name,// Store the uploaded file in the profilePhoto field
+          profilePhoto2: file// Store the uploaded file in the profilePhoto field
+        }));
+      };  
+      
 
-    }
-    const handleImageChange = (e) => {
-        const file=e.target.files[0];// Get the uploaded file
-       console.log(file)
-       setFormData((prevState) => ({
-         ...prevState,
-         profilePhoto: file// Store the uploaded file in the profilePhoto field
-       }));
-     };  
 
     return (
         <>
@@ -203,7 +216,7 @@ const OnBoarding = () => {
                         />
                         {formData.profilePhoto && (
                         <div className="photo-container">
-                            <img src={URL.createObjectURL(formData.profilePhoto)} alt="profile pic preview" />
+                            <img src={URL.createObjectURL(formData.profilePhoto2)} alt="profile pic preview" />
                         </div>
                         )}
                     </section>
