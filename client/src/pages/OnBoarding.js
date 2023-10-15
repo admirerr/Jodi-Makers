@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useState,useEffect} from "react"
 import Nav from "../components/Nav"
 import { useCookies} from "react-cookie"
 import {useNavigate} from "react-router-dom"
@@ -7,24 +7,41 @@ import axios from "axios"
 const OnBoarding = () => {
 
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({ //changed the state to read from thhe from the form data cookie
         user_id: cookies.UserId,
-        first_name: "",
-        dob_day: "",
-        dob_month: "",
-        dob_year: "",
-        show_gender: false,
-        profilePhoto:"",
-        gender_identity: "man",
-        gender_interest: "woman",
-        profilePhoto2: null,
-        about: "",
-        matches: []
+        first_name: cookies.formData?cookies.formData.first_name:'',
+        dob_day: cookies.formData?cookies.formData.dob_day:'',
+        dob_month: cookies.formData?cookies.formData.dob_month:'',
+        dob_year: cookies.formData?cookies.formData.dob_year:'',
+        show_gender: cookies.formData?cookies.formData.show_gender:false,
+        gender_identity: cookies.formData?cookies.formData.gender_identity:'man',
+        gender_interest: cookies.formData?cookies.formData.gender_interest:'woman',
+        url: cookies.formData?cookies.formData.url:'',
+        about: cookies.formData?cookies.formData.about:'',
+        matches: cookies.formData?cookies.formData.matches:[],
 
     })
+    
 
+    useEffect(()=>{
+            
+        const beforeUnloadHandler = async(event) => { //before refresh or closing save the form data
+            setCookie('formData',JSON.stringify(formData),{path:'/'})
+            axios.post('http://localhost:8000/abandon',formData); //call backend to delete the user
+            sessionStorage.setItem('redirect','true');//this is used so that the user is redirected even if a reload occurs
+            //this is done because many browser have security feature where reload event and tab closing event are identical ton each other''s to prevent scammer's from prompting something
+
+        };
+          
+            window.addEventListener("beforeunload", beforeUnloadHandler); //add the listener when onboarding is mounted
+            return (()=>{   
+                window.removeEventListener("beforeunload", beforeUnloadHandler);//cleanup on dismount
+            }  
+     )  
+    },[formData,removeCookie,setCookie])
+   
     let navigate = useNavigate()
-
+    
     const handleSubmit = async (e) => {
         e.preventDefault()
 
@@ -41,7 +58,11 @@ const OnBoarding = () => {
 
             const success = response.status === 200
             const success2 = response2.status === 200
-            if(success&&success2) navigate('/dashboard')
+            if(success&&success2) {
+                setCookie('formData',{})
+                navigate('/dashboard')
+                
+            }
         } catch (err) {
             console.log(err)
         }
@@ -60,7 +81,12 @@ const OnBoarding = () => {
         
       };
 
-      const handleImageChange = (e) => {
+      if(sessionStorage.getItem('redirect')!=null){//since session storage persit's in the tab this will tell us wheteher refresh was done or tab was closed
+        sessionStorage.removeItem('redirect'); //remove the item from the session
+        removeCookie('UserId') //delete the cookie's since the user is no longer in the database
+        removeCookie('AuthToken')
+        window.location.href='http://localhost:3000'
+    }    const handleImageChange = (e) => {
          const file=e.target.files[0];// Get the uploaded file
         console.log(file)
         setFormData((prevState) => ({
@@ -69,7 +95,7 @@ const OnBoarding = () => {
           profilePhoto2: file// Store the uploaded file in the profilePhoto field
         }));
       };  
-      
+          
 
 
     return (

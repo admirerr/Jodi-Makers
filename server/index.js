@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
 const {google}=require('googleapis');
-const uri = 'YOUR_MONGODB_URI'
+const uri = 'mongodb://localhost:27017/' //insert your mongo uri here
 
 const multer = require('multer');
 
@@ -69,7 +69,7 @@ app.get('/google',async(req,res)=>{ //handles the callback from google
             const token = jwt.sign(existingUser, sanitizedEmail, {
                 expiresIn: 60*24,   //sign the token and send it
             })
-    
+            
             const resobject=JSON.stringify({token:token,userId:existingUser.user_id,logged:'true'});
             res.redirect('http://localhost:3000/oauthlogger/'+resobject)
             return;
@@ -100,7 +100,43 @@ app.get('/google',async(req,res)=>{ //handles the callback from google
         res.status(500).send('Error during authentication');
       }
 })
+app.post('/abandon',async (req,res)=>{ //endpoint for deleting the user from the data base
+    const client = new MongoClient(uri);
+    console.log('called')
+    await client.connect();
+    const database = client.db('app-data')
+    const users = database.collection('users')
+    const data= req.body;
+    try{ 
+           await users.deleteOne({user_id:data.user_id})   
+    }
+    catch(e){
+        console.log(e);
+    }
+    res.send('done')
+})
+app.get('/exist',async (req,res)=>{ //endpoint for checking if the user with current authtoken is in the database
+    const id = req.query.user_id;
+    const client = new MongoClient(uri);
+    console.log('exist called')
+    try{
+        await client.connect();
+        const database = client.db('app-data')
+        const users = database.collection('users')
 
+        const existingUser = await users.findOne({user_id:id})
+        if(existingUser==null){
+            res.send('noUser');
+
+        }
+        else{
+            res.send('exist');
+        }
+    }
+    catch(e){
+        console.log(e);
+    }
+})
 app.get('/', (req, res) => {
     res.json('Hello to my app')
 })
