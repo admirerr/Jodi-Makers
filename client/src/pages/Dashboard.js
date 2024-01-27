@@ -3,21 +3,12 @@ import {useEffect, useState} from "react"
 import { useCookies} from "react-cookie"
 import ChatContainer from '../components/ChatContainer'
 import axios from "axios"
-import { useNavigate } from "react-router-dom"
 
 const Dashboard = () => {
-    const [user, setUser] = useState({}) //was throwing some error related to null safety
+    const [user, setUser] = useState(null)
     const [genderedUsers, setGenderedUsers] = useState(null)
     const [lastDirection, setLastDirection] = useState()
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
-    let navigate = useNavigate()
-
-    const logout = () => {
-        removeCookie('UserId', cookies.UserId)
-        removeCookie('AuthToken', cookies.AuthToken)
-        navigate('/')
-        window.location.reload()
-    }
 
 
     const userId = cookies.UserId
@@ -45,6 +36,7 @@ const Dashboard = () => {
         }
     }
 
+
     useEffect(() => {
         getUser()
     }, [])
@@ -57,7 +49,6 @@ const Dashboard = () => {
     }, [user])
 
 
-    console.log(genderedUsers)
 
 
 
@@ -92,10 +83,8 @@ const Dashboard = () => {
         console.log(name + ' left the screen!')
     }
 
-    if(user.matches!=null){
-        var matchedUserIds = user?.matches.map(({ user_id}) => user_id).concat(userId)
-    }
-   
+
+    const matchedUserIds = user?.matches.map(({ user_id}) => user_id).concat(userId)
     const filteredGenderedUsers = genderedUsers?.filter(genderedUser => !matchedUserIds.includes(genderedUser.user_id))
 
 
@@ -105,16 +94,16 @@ const Dashboard = () => {
                 <div className="dashboard">
                     <ChatContainer user={user}/>
                     <div className="swipe-container">
-                    <div className="logout-icon"><i className="log-out-icon" onClick={logout}>⇦</i></div>
                         <div className="card-container">
+
                             {filteredGenderedUsers?.map((genderedUser) =>
                                 <TinderCard className='swipe'
                                             key={genderedUser.user_id}
                                             onSwipe={(dir) => swiped(dir, genderedUser.user_id)}
                                             onCardLeftScreen={() => outOfFrame(genderedUser.first_name)}>
-                                    <h3 className="name-display">{genderedUser.first_name}</h3>
                                     <div style={{backgroundImage: 'url(' + genderedUser.url + ')'}}
                                          className='card'>
+                                        <h3>{genderedUser.first_name}</h3>
                                     </div>
                                 </TinderCard>
                             )}
