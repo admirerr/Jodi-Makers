@@ -6,137 +6,14 @@ const { v4: uuidv4} = require('uuid')
 const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
-const {google}=require('googleapis');
-const uri = 'mongodb://localhost:27017/' //insert your mongo uri here
 
-const multer = require('multer');
+const uri = 'YOUR_MONGODB_URI'
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads/')
-    },
-    filename: function (req, file, cb) {
-      cb(null,  file.originalname)
-    }
-  })
-  const upload = multer({ storage: storage })
+
 const app = express()
 app.use(cors())
 app.use(express.json())
 
-//api configuration and creadential's to be changed according to use case
-const scopes=['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/profile.emails.read']
-const clienid="231065169890-l55sbl2ij802t79ukp11po6eidc1ii16.apps.googleusercontent.com"
-const clientsecret="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"
-const redirecturi="http://localhost:8000/google";
-const oauthclient=new google.auth.OAuth2(clienid,clientsecret,redirecturi);
-
-
-app.get('/authgoogle',(req,res)=>{
-    const authurl=oauthclient.generateAuthUrl({access_type:'offline',scope:scopes})
-    res.redirect(authurl)   //handles the auth request from frontend and redirect's to google
-})
-app.get('/google',async(req,res)=>{ //handles the callback from google
-    const {code}=req.query
-    try {
-       
-        const { tokens } = await oauthclient.getToken(code);
-        const accessToken = tokens.access_token;
-        const refreshToken = tokens.refresh_token; //keeping the token's open incase more type of data is required
-        var auth=oauthclient;
-        auth.credentials=tokens;
-
-        const people = google.people({ version: 'v1', auth:auth });
-        
-        var googleid;
-        people.people.get({
-          resourceName: 'people/me',
-          personFields: 'emailAddresses'
-        })
-        .then(async(response) => {
-            const client = new MongoClient(uri)
-            const generateUserId = uuidv4() //create the user in database
-            
-            await client.connect()
-            const database = client.db('app-data')
-            const users = database.collection('users')
-
-
-          const email=response.data.emailAddresses[0].value;
-          const sanitizedEmail = email.toLowerCase()
-          const existingUser = await users.findOne( { email })
-          if(existingUser) {
-            const token = jwt.sign(existingUser, sanitizedEmail, {
-                expiresIn: 60*24,   //sign the token and send it
-            })
-            
-            const resobject=JSON.stringify({token:token,userId:existingUser.user_id,logged:'true'});
-            res.redirect('http://localhost:3000/oauthlogger/'+resobject)
-            return;
-        }
-      
-         
-
-        const data = {
-            user_id: generateUserId,
-            email: sanitizedEmail,
-         
-        }
-        const insertedUser = await users.insertOne(data)
-
-        const token = jwt.sign(insertedUser, sanitizedEmail, {
-            expiresIn: 60*24,
-        })
-
-        const resobject=JSON.stringify({token:token,userId:generateUserId,logged:'false'});
-        res.redirect('http://localhost:3000/oauthlogger/'+resobject)
-        
-         
-        })
-       
-        
-      } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('Error during authentication');
-      }
-})
-app.post('/abandon',async (req,res)=>{ //endpoint for deleting the user from the data base
-    const client = new MongoClient(uri);
-    console.log('called')
-    await client.connect();
-    const database = client.db('app-data')
-    const users = database.collection('users')
-    const data= req.body;
-    try{ 
-           await users.deleteOne({user_id:data.user_id})   
-    }
-    catch(e){
-        console.log(e);
-    }
-    res.send('done')
-})
-app.get('/exist',async (req,res)=>{ //endpoint for checking if the user with current authtoken is in the database
-    const id = req.query.user_id;
-    const client = new MongoClient(uri);
-    console.log('exist called')
-    try{
-        await client.connect();
-        const database = client.db('app-data')
-        const users = database.collection('users')
-
-        const existingUser = await users.findOne({user_id:id})
-        if(existingUser==null){
-            res.send('noUser');
-
-        }
-        else{
-            res.send('exist');
-        }
-    }
-    catch(e){
-        console.log(e);
-    }
-})
 app.get('/', (req, res) => {
     res.json('Hello to my app')
 })
@@ -296,47 +173,39 @@ app.get('/gendered-users', async (req, res) => {
 
 
 
+app.put('/user', async (req, res) => {
+    const client = new MongoClient(uri)
+    const formData = req.body.formData
 
-app.put('/user',  async (req, res) => {
-    const client = new MongoClient(uri);
-    const formData = req.body;
-  
-    console.log(formData);
-  
+    console.log(formData)
+
     try {
-      await client.connect();
-      const database = client.db('app-data');
-      const users = database.collection('users');
-  
-      const query = { user_id: formData.user_id };
-      const updateDocument = {
-        $set: {
-          first_name: formData.first_name,
-          dob_day: formData.dob_day,
-          dob_month: formData.dob_month,
-          dob_year: formData.dob_year,
-          show_gender: formData.show_gender,
-          gender_identity: formData.gender_identity,
-          gender_interest: formData.gender_interest,
-          profilePhoto:formData.profilePhoto,
-          about: formData.about,
-          matches: formData.matches,
-        },
-      };
-  
-      const insertedUser = await users.updateOne(query, updateDocument);
-      res.send(insertedUser);
-    } finally {
-      await client.close();
-    }
-  });
+        await client.connect()
+        const database = client.db('app-data')
+        const users = database.collection('users')
 
-  app.post("/upload-image",upload.single("profilePhoto"),async (req,res)=>
-  {
-    console.log(req.body);
-    res.send("Uploaded!");
-  });
-  
+
+        const query = { user_id: formData.user_id}
+        const updateDocument = {
+            $set: {
+                first_name: formData.first_name,
+                dob_day: formData.dob_day,
+                dob_month: formData.dob_month,
+                dob_year: formData.dob_year,
+                show_gender: formData.show_gender,
+                gender_identity: formData.gender_identity,
+                gender_interest: formData.gender_interest,
+                url: formData.url,
+                about: formData.about,
+                matches: formData.matches
+            },
+        }
+        const insertedUser = await users.updateOne(query, updateDocument)
+        res.send(insertedUser)
+    } finally {
+        await client.close()
+    }
+})
 
 
 

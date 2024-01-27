@@ -1,4 +1,4 @@
-import {useState,useEffect} from "react"
+import {useState} from "react"
 import Nav from "../components/Nav"
 import { useCookies} from "react-cookie"
 import {useNavigate} from "react-router-dom"
@@ -7,62 +7,30 @@ import axios from "axios"
 const OnBoarding = () => {
 
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
-    const [formData, setFormData] = useState({ //changed the state to read from thhe from the form data cookie
+    const [formData, setFormData] = useState({
         user_id: cookies.UserId,
-        first_name: cookies.formData?cookies.formData.first_name:'',
-        dob_day: cookies.formData?cookies.formData.dob_day:'',
-        dob_month: cookies.formData?cookies.formData.dob_month:'',
-        dob_year: cookies.formData?cookies.formData.dob_year:'',
-        show_gender: cookies.formData?cookies.formData.show_gender:false,
-        gender_identity: cookies.formData?cookies.formData.gender_identity:'man',
-        gender_interest: cookies.formData?cookies.formData.gender_interest:'woman',
-        url: cookies.formData?cookies.formData.url:'',
-        about: cookies.formData?cookies.formData.about:'',
-        matches: cookies.formData?cookies.formData.matches:[],
+        first_name: "",
+        dob_day: "",
+        dob_month: "",
+        dob_year: "",
+        show_gender: false,
+        gender_identity: "man",
+        gender_interest: "woman",
+        url: "",
+        about: "",
+        matches: []
 
     })
-    
 
-    useEffect(()=>{
-            
-        const beforeUnloadHandler = async(event) => { //before refresh or closing save the form data
-            setCookie('formData',JSON.stringify(formData),{path:'/'})
-            axios.post('http://localhost:8000/abandon',formData); //call backend to delete the user
-            sessionStorage.setItem('redirect','true');//this is used so that the user is redirected even if a reload occurs
-            //this is done because many browser have security feature where reload event and tab closing event are identical ton each other''s to prevent scammer's from prompting something
-
-        };
-          
-            window.addEventListener("beforeunload", beforeUnloadHandler); //add the listener when onboarding is mounted
-            return (()=>{   
-                window.removeEventListener("beforeunload", beforeUnloadHandler);//cleanup on dismount
-            }  
-     )  
-    },[formData,removeCookie,setCookie])
-   
     let navigate = useNavigate()
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault()
 
         try {
-            const response = await axios.put('http://localhost:8000/user', { formData },
-        )
-            const formdata2=new FormData();
-            formdata2.append("profilePhoto",formData.profilePhoto2);
-            const response2= await axios.post("http://localhost:8000/upload-image",formdata2,
-            {
-                headers:{"Content-Type":"multipart/form-data"},
-            }
-            );
-
+            const response = await axios.put('http://localhost:8000/user', { formData })
             const success = response.status === 200
-            const success2 = response2.status === 200
-            if(success&&success2) {
-                setCookie('formData',{})
-                navigate('/dashboard')
-                
-            }
+            if(success) navigate('/dashboard')
         } catch (err) {
             console.log(err)
         }
@@ -71,31 +39,16 @@ const OnBoarding = () => {
 
     const handleChange = (e) => {
         console.log('e', e)
-          const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
-          const name = e.target.name;
-      
-          setFormData((prevState) => ({
-            ...prevState,
-            [name]: value,
-          }));
-        
-      };
+            const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
+        const name = e.target.name
 
-      if(sessionStorage.getItem('redirect')!=null){//since session storage persit's in the tab this will tell us wheteher refresh was done or tab was closed
-        sessionStorage.removeItem('redirect'); //remove the item from the session
-        removeCookie('UserId') //delete the cookie's since the user is no longer in the database
-        removeCookie('AuthToken')
-        window.location.href='http://localhost:3000'
-    }    const handleImageChange = (e) => {
-         const file=e.target.files[0];// Get the uploaded file
-        console.log(file)
         setFormData((prevState) => ({
-          ...prevState,
-          profilePhoto: file.name,// Store the uploaded file in the profilePhoto field
-          profilePhoto2: file// Store the uploaded file in the profilePhoto field
-        }));
-      };  
-          
+            ...prevState,
+            [name]: value
+        }))
+
+
+    }
 
 
     return (
@@ -125,13 +78,34 @@ const OnBoarding = () => {
                         <label>Birthday</label>
                         <div className="multiple-input-container">
                             <input
-                              type="date"
-                              id="dob"
-                                name="dob"
+                                id="dob_day"
+                                type="number"
+                                name="dob_day"
+                                placeholder="DD"
                                 required={true}
-                                value={formData.dob}
+                                value={formData.dob_day}
                                 onChange={handleChange}
-                                />
+                            />
+
+                        <input
+                            id="dob_month"
+                            type="number"
+                            name="dob_month"
+                            placeholder="MM"
+                            required={true}
+                            value={formData.dob_month}
+                            onChange={handleChange}
+                        />
+
+                        <input
+                            id="dob_year"
+                            type="number"
+                            name="dob_year"
+                            placeholder="YYYY"
+                            required={true}
+                            value={formData.dob_year}
+                            onChange={handleChange}
+                        />
                         </div>
 
 
@@ -231,20 +205,20 @@ const OnBoarding = () => {
 
 
                     <section>
-                    <label htmlFor="profilePhoto">Profile Photo</label>
+
+                        <label htmlFor="url">Profile Photo</label>
                         <input
-                        type="file"
-                        name="profilePhoto"
-                        id="profilePhoto"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        required
+                            type="url"
+                            name="url"
+                            id="url"
+                            onChange={handleChange}
+                            required={true}
                         />
-                        {formData.profilePhoto && (
                         <div className="photo-container">
-                            <img src={URL.createObjectURL(formData.profilePhoto2)} alt="profile pic preview" />
+                            {formData.url && <img src={formData.url} alt="profile pic preview"/>}
                         </div>
-                        )}
+
+
                     </section>
 
                 </form>

@@ -9,7 +9,7 @@ To get started with the project, you will need to follow these steps:
 
 1. Clone the repository: `git clone https://github.com/admirerr/Jodi-Makers.git`
 2. Start the server: 
-   cd server->npm i->npm i multer->npm i nodemon->nodemon run start:backend
+   cd server->npm i->npm i nodemon->nodemon run start:backend
 3. Start the client in parallel terminal: 
    cd client->npm i->npm i nodemon->nodemon run start:frontend
 
